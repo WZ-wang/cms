@@ -1,0 +1,23 @@
+{
+  "id": "1581987",
+  "name": "cms",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "579286",
+      "name": "点赞",
+      "font_class": "dianzan",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "8103413",
+      "name": "收藏",
+      "font_class": "danseshixintubiao-",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    }
+  ]
+}
