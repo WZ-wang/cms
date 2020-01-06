@@ -777,6 +777,7 @@ export default {
     height: 90px;
     width: 100%;
     margin-top: -80px;
+    background-color #fff
 
     .cell {
       padding-top: 30px;

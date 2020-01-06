@@ -6,9 +6,12 @@
         <header>
           <div class="left">
             <h3>课程名字总长度实训项目</h3>
-            <p>项目简介项目简介项目简介项目简介项项目简介项目简介项目简介项目简介项项目简介项目简介项目简介项目简介项项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介项目简介</p>
+            <p style="text-indent:2em;line-height:1.3">
+              平台中相关教学培训系统内容，按照全国中医行业高等教育“十三五”规划教材/全国高等中医院校规划教材（第十版）章节内容进行制作，系统中“仿真人体模型”按照《局部解剖学》、《正常人体解剖学》采用真实人体三维重建方式搭建，系统中“经络腧穴课程模块”按照《经络腧穴学》、《针灸学》进行内容制作，“推拿手法技能模块”按照《推拿手法学》、《按摩推拿学》进行内容制作。
+              系统采用VR、AI、动作捕捉、传感器技术，实现中医教学过程的虚拟结合、动静结合、理论实践结合，具象化展现经络腧穴理论内容，智能化分析推拿手法动作数据，数字化展现中医推拿技能教学的要点和要领，为中医专业学生提供科技化理论技能学习手段。
+            </p>
             <span>所属机构：XXX公司或者学校</span>
-            <span style="padding:0 20px">负责人：XXX公司或者学校</span>
+            <span style="margin:0 40px">负责人：XXX公司或者学校</span>
             <span>项目信息：XXX公司或者学校</span>
             <div class="icon">
               <div>
@@ -181,6 +184,7 @@
               :autosize="{ minRows: 6, maxRows: 6}"
               type="textarea"
               style="width: 1130px;"
+              placeholder="发表言论"
               v-model="comment"
             ></el-input>
             <el-button type="primary" class="btn">发表评论</el-button>
@@ -200,6 +204,7 @@
                   <el-input
                     :autosize="{ minRows: 4, maxRows: 4}"
                     type="textarea"
+                    placeholder="说点什么吧"
                     style="width: 1030px;margin-left:30px"
                     v-model="comment"
                   ></el-input>
@@ -224,6 +229,9 @@
                   <p>dfafafafadasdsadas撒电脑就暗示法dfafafafas撒电脑就暗示法dfafafafas撒电脑就暗示法dfafafafas撒电脑就暗示法dfafafafas撒电脑就暗示法dfafafafadasdsadas撒电脑就暗示法dfafafafadasdsadas撒电脑就暗示法叫你啥of就大概就是发动机群殴if啊</p>
                   <p class="time">2012-12-24</p>
                 </div>
+                <div class="page">
+                  <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
+                </div>
               </div>
             </div>
             <div class="line"></div>
@@ -238,6 +246,9 @@
                 <p class="time">2012-12-24</p>
               </div>
             </div>
+            <div class="page">
+              <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
+            </div>
           </div>
           <!-- <div class="noPeople">
             暂无评论
@@ -245,6 +256,7 @@
         </div>
       </div>
     </div>
+    <button ref="top" @click="goTop" style="position:fixed;right:0;bottom:0">回到顶部</button>
   </div>
 </template>
 
@@ -263,16 +275,19 @@ export default {
       value: 3.8, //评分
       timeValue: "一周内",
       options: ["一周内", "一个月内", "三个月内", "全部"],
-      recomment:false
+      recomment: false
     };
   },
   created() {},
   mounted() {
+    window.addEventListener("scroll", this.scrollToTop);
     this.drawChart();
+    this.loading();
   },
   methods: {
     changeNav(index) {
       this.currentIndex = index;
+      this.loading();
     },
     drawChart() {
       // 基于准备好的dom，初始化echarts实例
@@ -358,7 +373,39 @@ export default {
       myChart1.setOption(option1);
       myChart2.setOption(option2);
       myChart.setOption(option);
+    },
+    // 滑动时触发
+    scrollToTop() {
+      let scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop;
+      let browserHeight = window.outerHeight; //浏览器页面高度
+      if (scrollTop > browserHeight) {
+        this.$refs.top.style.display = "block";
+      } else {
+        this.$refs.top.style.display = "none";
+      }
+    },
+    //返回顶部
+    goTop() {
+      window.scrollTo(0, 0);
+    },
+    loading() {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      setTimeout(() => {
+        loading.close();
+      }, 1000);
     }
+  },
+  //离开时移除滑动监听事件
+  destroyed() {
+    window.removeEventListener("scroll", this.scrollToTop);
   },
   components: { NullShow }
 };
@@ -369,6 +416,7 @@ export default {
   background-color: #f5f5f5;
   width: 100%;
   padding-top: 10px;
+  padding-bottom: 80px;
 
   .wrapper {
     width: 1190px;
@@ -413,12 +461,21 @@ export default {
 
         h3 {
           font-size: 16px;
+          font-weight bolder
         }
 
         p {
+          font-size: 14px;
           margin-top: 20px;
           margin-bottom: 24px;
-          width: 400px;
+          width: 650px;
+          text-overflow: -o-ellipsis-lastline;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 5;
+          line-clamp: 5;
+          -webkit-box-orient: vertical;
         }
       }
 
@@ -633,6 +690,12 @@ export default {
         margin-top: 30px;
       }
     }
+  }
+
+  .page {
+    width: 400px;
+    margin: 40px auto 0;
+    padding-bottom: 60px;
   }
 }
 </style>
