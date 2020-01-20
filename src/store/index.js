@@ -8,14 +8,14 @@ const vuexLocal = new VuexPersistence({
 export default new Vuex.Store({
   state: {
     userInfo:{},
-    isLogin:false
+    isLogin:false,
+    isShowLoading:true
   },
   mutations: {
     getUser(state,userInfo){
       state.userInfo = userInfo
     },
     editUser(state){
-
     },
     checkToken(state){
       if (localStorage.getItem("Token")) {
@@ -23,11 +23,13 @@ export default new Vuex.Store({
       } else {
         state.isLogin = false;
       }
+    },
+    changeLoading(state,isShow){
+      state.isShowLoading = isShow
     }
   },
   actions: {
     editUser({commit}){
-
     }
   },
   modules: {

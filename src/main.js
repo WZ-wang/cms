@@ -11,6 +11,15 @@ Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios
 Vue.prototype.$echarts = echarts
+// router.beforeEach((to, from, next) => {
+//   console.log('beforeEach')
+//   if(localStorage.getItem("Token")){
+//     next()
+//   }else{
+//     next("/")
+//   }
+// })
+
 new Vue({
   router,
   store,

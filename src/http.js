@@ -25,9 +25,9 @@ function endLoading() {
 // 请求拦截
 axios.interceptors.request.use(config => {
   // 加载
-  startLoading()
-  // if (localStorage.eleToken)
-  //   config.headers.Authorization = localStorage.eleToken
+  // startLoading()
+  if (localStorage.eleToken)
+    config.headers.Authorization = localStorage.eleToken
   return config
 }, error => {
   return Promise.reject(error)
@@ -35,23 +35,24 @@ axios.interceptors.request.use(config => {
 
 // 响应拦截
 axios.interceptors.response.use(response => {
-  endLoading()
+  // endLoading()
   return response
 }, error => {
   // 错误提醒
-  endLoading()
+  // endLoading()
   Message.error(error.response.data)
+  console.log(error)
 
-  const {
-    status
-  } = error.response
-  if (status == 401) {
-    Message.error('token值无效，请重新登录')
-    // 清除token
-    localStorage.removeItem('eleToken')
-    // 页面跳转
-    router.push('/login')
-  }
+  // const {
+  //   status
+  // } = error.response
+  // if (status == 401) {
+  //   Message.error('token值无效，请重新登录')
+  //   // 清除token
+  //   localStorage.removeItem('eleToken')
+  //   // 页面跳转
+  //   router.push('/login')
+  // }
 
   return Promise.reject(error)
 })

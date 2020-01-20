@@ -5,27 +5,38 @@
         <!-- 项目头部简介 -->
         <header>
           <div class="left">
-            <h3>课程名字总长度实训项目</h3>
-            <p style="text-indent:2em;line-height:1.3">
-              平台中相关教学培训系统内容，按照全国中医行业高等教育“十三五”规划教材/全国高等中医院校规划教材（第十版）章节内容进行制作，系统中“仿真人体模型”按照《局部解剖学》、《正常人体解剖学》采用真实人体三维重建方式搭建，系统中“经络腧穴课程模块”按照《经络腧穴学》、《针灸学》进行内容制作，“推拿手法技能模块”按照《推拿手法学》、《按摩推拿学》进行内容制作。
-              系统采用VR、AI、动作捕捉、传感器技术，实现中医教学过程的虚拟结合、动静结合、理论实践结合，具象化展现经络腧穴理论内容，智能化分析推拿手法动作数据，数字化展现中医推拿技能教学的要点和要领，为中医专业学生提供科技化理论技能学习手段。
+            <h3>{{programData.name}}</h3>
+            <p style="text-indent:2em;line-height:1.5;margin-bottom:15px;">{{programData.brief}}</p>
+            <span>所属专业类：{{programData.organ}}</span>
+            <span style="margin:0 40px">对应专业：{{programData.wheel}}</span>
+            <span>所属机构：{{programData.item}}</span>
+            <p>
+              <span>项目负责人：{{programData.iduce}}</span>
+              <span style="margin:0 40px">联系方式：{{programData.phone}}</span>
             </p>
-            <span>所属机构：XXX公司或者学校</span>
-            <span style="margin:0 40px">负责人：XXX公司或者学校</span>
-            <span>项目信息：XXX公司或者学校</span>
             <div class="icon">
               <div>
-                <i class="iconfont icon-dianzan"></i>
-                <span style="margin-right:40px">1.4万</span>
-                <i class="iconfont icon-danseshixintubiao-"></i>
-                <span>6693</span>
+                <el-link :href="programData.cupload" :underline="false" style="margin-right:40px;">
+                  <el-button type="primary">我要做实验</el-button>
+                </el-link>
+              </div>
+              <div :class="iconStatus.isGood?'add':''">
+                <i @click="good" class="iconfont icon-dianzan"></i>
+                <span style="margin-right:40px">{{programData.record}}</span>
+              </div>
+              <div v-if="!iconStatus.isCollection" style="width:90px">
+                <i @click="collection" class="iconfont icon-danseshixintubiao-"></i>
+                <span>收藏</span>
+              </div>
+              <div v-else class="add" style="width:90px">
+                <i @click="collection" class="iconfont icon-danseshixintubiao-"></i>
+                <span>已收藏</span>
               </div>
               <div class="rate">
-                <span>评分</span>
+                <span>个人评分</span>
                 <el-rate
-                  v-model="value"
-                  disabled
-                  show-score
+                  @change="rate"
+                  v-model="iconStatus.rate"
                   text-color="#ff9900"
                   score-template="{value}"
                 ></el-rate>
@@ -33,19 +44,19 @@
             </div>
           </div>
           <div class="right">
-            <video
-              id="video"
-              poster="../../assets/program.jpg"
-              ref="myVideo"
-              width="340"
-              height="190"
-              controls
-            >
-              <source
-                src="http://192.168.1.48:9000/static/video/7edbe29f-a4e1-4f5d-adff-05f70d65a602demo.mp4"
-                type="video/mp4"
-              />
-            </video>
+            <div class="rate">{{programData.rate}}</div>
+            <div>
+              <video
+                id="video"
+                :poster="programData.pict"
+                ref="myVideo"
+                width="340"
+                height="190"
+                controls
+              >
+                <source type="video/mp4" />
+              </video>
+            </div>
           </div>
         </header>
         <!-- 项目的详细介绍 -->
@@ -62,33 +73,26 @@
           <div class="content">
             <!-- <NullShow></NullShow> -->
             <!-- 项目介绍 -->
-            <div v-if="currentIndex == 0">
-              <div class="pIndex">
-                <iframe
-                  src="http://192.168.1.48:9000/static/picture/9d62ac8b-8af7-4245-aada-3bc8539d00c1qwer.pdf"
-                  width="100%"
-                  height="700px"
-                >
+            <div v-show="currentIndex == 0">
+              <div v-if="programData.dload" class="pIndex">
+                <iframe :src="programData.dload" width="100%" height="700px">
                   This browser does not support PDFs. Please download the PDF to view it:
-                  <a
-                    href="http://192.168.1.48:9000/static/picture/9d62ac8b-8af7-4245-aada-3bc8539d00c1qwer.pdf"
-                    rel="external nofollow"
-                  >Download PDF</a>
+                  <!-- <el-link :href="programData.dload">文档下载</el-link> -->
                 </iframe>
               </div>
-              <!-- <NullShow></NullShow> -->
+              <NullShow v-else></NullShow>
             </div>
             <!-- 课程下载 -->
-            <div v-else-if="currentIndex == 1">
+            <!-- <div v-else-if="currentIndex == 1">
               <NullShow></NullShow>
-            </div>
+            </div>-->
             <!-- 实验步骤 -->
-            <div class="procedures" v-else-if="currentIndex == 2">
+            <div class="procedures" v-if="currentIndex == 1">
               <div class="left">
                 <div class="select">
                   <h3
                     v-for="(item,index) in ProceduresNav"
-                    @click="pCurrentIndex = index"
+                    @click="pchangeNav(index)"
                     :key="index"
                     :class="pCurrentIndex===index?'selected':''"
                   >{{item}}</h3>
@@ -96,67 +100,52 @@
               </div>
               <div class="right">
                 <!-- 实验准备 -->
-                <div v-if="pCurrentIndex==0">
-                  <div>
+                <div v-show="pCurrentIndex==0">
+                  <div v-if="programData.oation">
                     <iframe
-                      src="http://192.168.1.48:9000/static/picture/9d62ac8b-8af7-4245-aada-3bc8539d00c1qwer.pdf"
+                      :src="programData.oation"
                       width="100%"
                       height="700px"
-                    >
-                      This browser does not support PDFs. Please download the PDF to view it:
-                      <a
-                        href="http://192.168.1.48:9000/static/picture/9d62ac8b-8af7-4245-aada-3bc8539d00c1qwer.pdf"
-                        rel="external nofollow"
-                      >Download PDF</a>
-                    </iframe>
+                    >This browser does not support PDFs. Please download the PDF to view it:</iframe>
                   </div>
-                  <!-- <NullShow></NullShow> -->
+                  <NullShow v-else></NullShow>
                 </div>
                 <!-- 操作流程 -->
-                <div v-else-if="pCurrentIndex==1">
-                  <div>
+                <div v-show="pCurrentIndex==1">
+                  <div v-if="programData.ictions">
                     <iframe
-                      src="http://192.168.1.48:9000/static/picture/9d62ac8b-8af7-4245-aada-3bc8539d00c1qwer.pdf"
+                      :src="programData.ictions"
                       width="100%"
                       height="700px"
-                    >
-                      This browser does not support PDFs. Please download the PDF to view it:
-                      <a
-                        href="http://192.168.1.48:9000/static/picture/9d62ac8b-8af7-4245-aada-3bc8539d00c1qwer.pdf"
-                        rel="external nofollow"
-                      >Download PDF</a>
-                    </iframe>
+                    >This browser does not support PDFs. Please download the PDF to view it:</iframe>
                   </div>
-                  <!-- <NullShow></NullShow> -->
+                  <NullShow v-else></NullShow>
                 </div>
                 <!-- 操作视频 -->
-                <div v-else-if="pCurrentIndex==2">
-                  <NullShow></NullShow>
-                </div>
-                <!-- 使用说明 -->
-                <div v-else-if="pCurrentIndex==3">
-                  <div>
-                    <iframe
-                      src="http://192.168.1.48:9000/static/picture/9d62ac8b-8af7-4245-aada-3bc8539d00c1qwer.pdf"
-                      width="100%"
-                      height="700px"
-                    >
-                      This browser does not support PDFs. Please download the PDF to view it:
-                      <a
-                        href="http://192.168.1.48:9000/static/picture/9d62ac8b-8af7-4245-aada-3bc8539d00c1qwer.pdf"
-                        rel="external nofollow"
-                      >Download PDF</a>
-                    </iframe>
+                <div v-show="pCurrentIndex==2">
+                  <div class="makeVideo">
+                    <h3>{{programData.maketext}}</h3>
+                    <video ref="makeVideo" width="340" height="190" controls>
+                      <source type="video/mp4" />
+                    </video>
                   </div>
                   <!-- <NullShow></NullShow> -->
                 </div>
-                <div v-else>
-                  <NullShow></NullShow>
+                <!-- 使用说明 -->
+                <div v-show="pCurrentIndex==3">
+                  <div v-if="programData.llzdsg">
+                    <iframe
+                      :src="programData.llzdsg"
+                      width="100%"
+                      height="700px"
+                    >This browser does not support PDFs. Please download the PDF to view it:</iframe>
+                  </div>
+                  <NullShow v-else></NullShow>
                 </div>
               </div>
             </div>
             <!-- 信息统计 -->
-            <div v-show="currentIndex == 3">
+            <div v-show="currentIndex == 2">
               <div class="wrapper">
                 <h3>近7日访问人数</h3>
                 <div id="line1"></div>
@@ -263,32 +252,154 @@
 <script>
 import echarts from "echarts";
 import NullShow from "../../components/null";
+import "../../../public/css/reset.css";
 export default {
   data() {
     return {
-      programItem: ["项目介绍", "课程下载", "实验操作", "信息统计"],
+      programItem: ["项目介绍", "实验操作", "信息统计"],
       ProceduresNav: ["实验准备", "操作流程", "操作视频", "使用说明"],
       currentIndex: 0,
       pCurrentIndex: 0,
-      imgUrl: "../../assets/program.jpg",
       comment: "",
-      value: 3.8, //评分
       timeValue: "一周内",
       options: ["一周内", "一个月内", "三个月内", "全部"],
-      recomment: false
+      recomment: false,
+      programData: {},
+      allProgramData: {},
+      iconStatus: {
+        isCollection: false,
+        rate: 0,
+        isGood: false
+      },
+      userInfo: {}
     };
   },
-  created() {},
+  created() {
+    this.userInfo = this.$store.state.userInfo;
+    this.getData();
+  },
   mounted() {
     window.addEventListener("scroll", this.scrollToTop);
     this.drawChart();
     this.loading();
   },
   methods: {
-    changeNav(index) {
-      this.currentIndex = index;
-      this.loading();
+    getData() {
+      let programDetail = new FormData();
+      programDetail.append("id", this.$route.params.id);
+      programDetail.append("phone", this.userInfo.phone);
+      //我的学习
+      this.$axios.post("/api/note/browse", programDetail).then(res => {
+        // console.log(res)
+      });
+      this.$axios.post("/api/note/course", programDetail).then(res => {
+        console.log(res);
+        this.allProgramData = res.data;
+        this.programData = res.data.gement;
+        this.programData.rate = Number(this.programData.rate);
+        if (this.programData.dload) {
+          this.programData.dload =
+            "http://192.168.1.48:9000/" + this.programData.dload;
+        }
+        if (this.programData.makevideo) {
+          this.programData.makevideo =
+            "http://192.168.1.48:9000/" + this.programData.makevideo;
+        }
+        if (this.programData.intvideo) {
+          this.programData.intvideo =
+            "http://192.168.1.48:9000/" + this.programData.intvideo;
+        }
+        if (this.programData.cupload) {
+          this.programData.cupload =
+            "http://192.168.1.48:9000/" + this.programData.cupload;
+        }
+        if (this.programData.llzdsg) {
+          this.programData.llzdsg =
+            "http://192.168.1.48:9000/" + this.programData.llzdsg;
+        }
+        if (this.programData.ement) {
+          this.programData.ement =
+            "http://192.168.1.48:9000/" + this.programData.ement;
+        }
+        if (this.programData.ictions) {
+          this.programData.ictions =
+            "http://192.168.1.48:9000/" + this.programData.ictions;
+        }
+        if (this.programData.oation) {
+          this.programData.oation =
+            "http://192.168.1.48:9000/" + this.programData.oation;
+        }
+        if (this.programData.pict) {
+          this.programData.pict =
+            "http://192.168.1.48:9000/" + this.programData.pict;
+        }
+        this.$refs.myVideo.src = this.programData.intvideo;
+        if (this.allProgramData.rate) {
+          this.iconStatus.rate = this.allProgramData.rate.likes;
+        } else {
+          this.iconStatus.rate = 0;
+        }
+        if (this.allProgramData.record) {
+          this.iconStatus.isGood = true;
+        } else {
+          this.iconStatus.isGood = false;
+        }
+        if (this.allProgramData.collect) {
+          this.iconStatus.isCollection = true;
+        } else {
+          this.iconStatus.isCollection = false;
+        }
+      });
     },
+    // 点赞
+    good() {
+      this.iconStatus.isGood = !this.iconStatus.isGood;
+      if (this.iconStatus.isGood) {
+        this.programData.record++;
+      } else {
+        this.programData.record--;
+      }
+      let goodData = new FormData();
+      goodData.append("id", this.programData.id);
+      goodData.append("phone", this.programData.phone);
+      goodData.append("likes", 1);
+      this.$axios.post("/api/note/record", goodData).then(res => {
+        // console.log(res);
+      });
+    },
+    // 收藏
+    collection() {
+      this.iconStatus.isCollection = !this.iconStatus.isCollection;
+      let collectionData = new FormData();
+      collectionData.append("id", this.programData.id);
+      collectionData.append("phone", this.programData.phone);
+      collectionData.append("likes", 1);
+      this.$axios.post("/api/note/collect", collectionData).then(res => {
+        // console.log(res);
+      });
+    },
+    // 评价
+    rate() {
+      let rateData = new FormData();
+      rateData.append("id", this.programData.id);
+      rateData.append("phone", this.programData.phone);
+      rateData.append("likes", this.iconStatus.rate);
+      this.$axios.post("/api/note/rate", rateData).then(res => {
+        console.log(res);
+      });
+    },
+    changeNav(index) {
+      // this.loading();
+      this.currentIndex = index;
+    },
+    pchangeNav(index) {
+      // this.loading();
+      this.pCurrentIndex = index;
+      if (index == 2) {
+        this.$refs.makeVideo.src = this.programData.makevideo;
+      }
+    },
+    // 数据统计图
     drawChart() {
       // 基于准备好的dom，初始化echarts实例
       let myChart1 = this.$echarts.init(document.getElementById("line1"));
@@ -403,7 +514,7 @@ export default {
       }, 1000);
     }
   },
-  //离开时移除滑动监听事件
+
   destroyed() {
     window.removeEventListener("scroll", this.scrollToTop);
   },
@@ -423,7 +534,6 @@ export default {
     margin: 20px auto 80px;
 
     header {
-      height: 270px;
       background-color: #fff;
       display: flex;
       justify-content: space-between;
@@ -439,6 +549,10 @@ export default {
           line-height: 70px;
           font-size: 14px;
           display: flex;
+
+          .add {
+            color: #4ccaff;
+          }
 
           .rate {
             margin-top: 5px;
@@ -461,14 +575,13 @@ export default {
 
         h3 {
           font-size: 16px;
-          font-weight bolder
+          font-weight: bolder;
         }
 
         p {
           font-size: 14px;
-          margin-top: 20px;
-          margin-bottom: 24px;
-          width: 650px;
+          margin-top: 10px;
+          width: 600px;
           text-overflow: -o-ellipsis-lastline;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -477,12 +590,29 @@ export default {
           line-clamp: 5;
           -webkit-box-orient: vertical;
         }
+
+        span {
+          font-size: 14px;
+        }
       }
 
       .right {
         flex: 1;
         margin: 40px 30px;
-        margin-left: 100px;
+        margin-left: 0;
+        display: flex;
+
+        .rate {
+          width: 70px;
+          height: 93px;
+          background: url('../../assets/rate.png');
+          background-repeat: no-repeat;
+          font-size: 24px;
+          color: #002b6e;
+          padding-top: 24px;
+          text-align: center;
+          margin-right: 75px;
+        }
       }
     }
 
@@ -548,6 +678,19 @@ export default {
 
           .right {
             flex: 1;
+
+            .makeVideo {
+              width: 1060px;
+              background-color: #fff;
+              text-align: center;
+              padding-bottom: 50px;
+
+              h3 {
+                font-size: 16px;
+                height: 80px;
+                line-height: 80px;
+              }
+            }
           }
         }
 

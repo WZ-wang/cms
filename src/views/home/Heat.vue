@@ -10,8 +10,8 @@
               :key="index"
               :class="heatCurrentIndex===index?'selected':''"
             >
-              <div class="el-icon-download" style="margin-right:15px;font-size:20px"></div>
-              {{item}}
+              <i :class="item.icon" style="margin-right:15px;font-size:20px"></i>
+              {{item.name}}
             </h3>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default {
           clickTime: 999999
         }
       ],
-      heatNav: ["人气排行", "下载排行", "热度排行"],
+      heatNav: [{name:"人气排行",icon:"iconfont icon-hot"}, {name:"下载排行",icon:"el-icon-download"}, {name:"上新排行",icon:"iconfont icon-shangchuan"}],
       heatCurrentIndex: 0
     };
   },

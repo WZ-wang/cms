@@ -22,7 +22,7 @@
         <span class="username" v-else>
           <el-dropdown trigger="click" @command="setDialogInfo">
             <span class="el-dropdown-link">
-              <span>欢迎，{{userInfo.name?userInfo.name:"当前用户"}}</span>
+              <span>欢迎，{{phone}}</span>
               <i class="el-icon-caret-bottom el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
@@ -93,7 +93,7 @@
           ></el-input>
         </span>
         <el-input
-          :input="isClickPass()"
+          :input="isClickPhone()"
           style="margin: 20px 0;backColor:blue"
           v-model="loginUser.password"
           placeholder="请输入密码"
@@ -124,19 +124,19 @@
         </div>
         <div v-if="!passwordShow">
           <el-button
-            style="width:130px;margin-left:-1px"
+            style="width:290px;margin-left:-1px"
             :type="!isClick?'primary':'info'"
             @click="submitForm('loginForm',1)"
             class="submit_btn"
             :disabled="isClick"
-          >注册用户</el-button>
-          <el-button
+          >登录</el-button>
+          <!-- <el-button
             style="width:130px;margin-left:30px"
             :type="!isClick?'primary':'info'"
             @click="submitForm('loginForm',2)"
             class="submit_btn"
             :disabled="isClick"
-          >专业用户</el-button>
+          >专业用户</el-button>-->
           <div class="tiparea">
             <el-checkbox v-model="checked">记住密码</el-checkbox>
             <p>
@@ -278,7 +278,8 @@ export default {
         { title: "主页", url: "/main" },
         { title: "实训项目", url: "/program" },
         { title: "热度排行", url: "/heat" }
-      ]
+      ],
+      phone:""
       // rules: {
       //   phone: [{ required: true, validator: checkphone, trigger: "blur" }],
       //   password: [
@@ -300,6 +301,7 @@ export default {
     this.getCookie();
   },
   methods: {
+    // 登录样式
     isClickPhone() {
       if (!this.loginUser.phone || !this.loginUser.password) {
         this.isClick = true;
@@ -307,18 +309,25 @@ export default {
         this.isClick = false;
       }
     },
-    isClickPass() {
-      if (!this.loginUser.phone || !this.loginUser.password) {
-        this.isClick = true;
-      } else {
-        this.isClick = false;
-      }
-    },
+    // 注册样式
+    // isClickRegister() {
+    //   if (
+    //     !this.loginUser.phone ||
+    //     !this.loginUser.password ||
+    //     !this.loginUser.password2 ||
+    //     !this.loginUser.verifyCode
+    //   ) {
+    //     this.isClick = true;
+    //   } else {
+    //     this.isClick = false;
+    //   }
+    // },
     //获取用户信息和是否登录
     getInfo() {
       this.$store.commit("checkToken");
       this.isLogin = this.$store.state.isLogin;
       this.userInfo = this.$store.state.userInfo;
+      this.phone = this.userInfo.phone.replace(this.userInfo.phone.substring(3,7),"****")
     },
     //登录
     submitForm(loginForm, index) {
@@ -327,55 +336,52 @@ export default {
           let loginInfo = new FormData();
           loginInfo.append("phone", this.loginUser.phone);
           loginInfo.append("password", this.loginUser.password);
-          if (index == 1) {
-            this.$axios.post("/api/note/wllogin", loginInfo).then(res => {
-              if (res.data.code == "OK") {
-                if (this.checked) {
-                  //传入账号名，密码，和保存天数3个参数
-                  this.setCookie(
-                    this.loginUser.phone,
-                    this.loginUser.password,
-                    7
-                  );
-                } else {
-                  this.clearCookie();
-                }
-                localStorage.setItem("Token", res.data.wuser.token);
-                this.$store.commit("getUser", res.data.wuser);
-                this.getInfo();
-                this.cancel();
+          // if (index == 1) {
+          this.$axios.post("/api/note/wllogin", loginInfo).then(res => {
+            if (res.data.code == "OK") {
+              if (this.checked) {
+                //传入账号名，密码，和保存天数3个参数
+                this.setCookie(this.loginUser.phone, this.loginUser.password);
               } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.msg
-                });
+                this.clearCookie();
               }
-            });
-          } else {
-            this.$axios.post("/api/user/pulogins", loginInfo).then(res => {
-              if (res.data.code.code == "OK") {
-                if (this.checked) {
-                  //传入账号名，密码，和保存天数3个参数
-                  this.setCookie(
-                    this.loginUser.phone,
-                    this.loginUser.password,
-                    7
-                  );
-                } else {
-                  this.clearCookie();
-                }
-                localStorage.setItem("Token", res.data.u.token);
-                this.$store.commit("getUser", res.data.u);
-                this.getInfo();
-                this.cancel();
-              } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.msg
-                });
-              }
-            });
-          }
+              console.log(res)
+              localStorage.setItem("Token", res.data.wuser.token);
+              this.$store.commit("getUser", res.data.wuser);
+              this.getInfo();
+              this.cancel();
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.msg
+              });
+            }
+          });
+          // } else {
+          //   this.$axios.post("/api/user/pulogins", loginInfo).then(res => {
+          //     if (res.data.code.code == "OK") {
+          //       if (this.checked) {
+          //         //传入账号名，密码，和保存天数3个参数
+          //         this.setCookie(
+          //           this.loginUser.phone,
+          //           this.loginUser.password,
+          //           7
+          //         );
+          //       } else {
+          //         this.clearCookie();
+          //       }
+          //       localStorage.setItem("Token", res.data.u.token);
+          //       this.$store.commit("getUser", res.data.u);
+          //       this.getInfo();
+          //       this.cancel();
+          //     } else {
+          //       this.$message({
+          //         type: "error",
+          //         message: res.data.msg
+          //       });
+          //     }
+          //   });
+          // }
         } else {
           return false;
         }
@@ -593,6 +599,7 @@ export default {
       this.currentIndex = 0;
       this.isPasswordShow = false;
     },
+    // 获取验证码
     getVerifyCode() {
       if (this.isCellPhone(this.loginUser.phone)) {
         this.validateBtn();
@@ -615,6 +622,7 @@ export default {
         });
       }
     },
+    //倒计时
     validateBtn() {
       let time = 60;
       let timer = setInterval(() => {
@@ -777,7 +785,7 @@ export default {
     height: 90px;
     width: 100%;
     margin-top: -80px;
-    background-color #fff
+    background-color: #fff;
 
     .cell {
       padding-top: 30px;

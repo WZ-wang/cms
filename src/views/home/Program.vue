@@ -6,39 +6,49 @@
           <div class="list">
             <div class="tit">专业大类：</div>
             <ul>
-              <li>全部(1080)</li>
-              <li class="isSelect">中医(1080)</li>
-              <li>专业(1080)</li>
-              <li>专业(1080)</li>
-              <li>专业(1080)</li>
+              <li
+                @click="selectOrgan(item,index)"
+                v-for="(item,index) in organ"
+                :key="index"
+                :class="organIndex==index?'isSelect':''"
+              >{{item.name}}</li>
             </ul>
           </div>
           <div class="list">
-            <div class="tit">专业大类：</div>
+            <div class="tit">专业分类：</div>
             <ul>
-              <li>全部(1080)</li>
-              <li>中医(1080)</li>
-              <li>专业(1080)</li>
-              <li>专业(1080)</li>
-              <li>专业(1080)</li>
+              <li
+                @click="selectWheel(item,index)"
+                v-for="(item,index) in wheel"
+                :key="index"
+                :class="wheelIndex==index?'isSelect':''"
+              >{{item.name}}</li>
             </ul>
           </div>
           <div class="list">
-            <div class="tit">专业大类：</div>
-            <ul>
-              <li>全部(1080)</li>
-              <li>中医(1080)</li>
-              <li>专业(1080)</li>
-              <li>专业(1080)</li>
-              <li>专业(1080)</li>
-            </ul>
-          </div>
-          <div class="list">
-            <div class="tit">关键词：</div>
-            <!-- <el-input class="inp" v-model="input" placeholder="请输入内容"></el-input>
-            <el-input class="inp" v-model="input" placeholder="请输入内容"></el-input>
-            <el-input class="inp" v-model="input" placeholder="请输入内容"></el-input>-->
+            <div class="tit" style="margin-top: -10px">关键词：</div>
+            <el-input class="inp" v-model="keyword.pName" placeholder="项目名称"></el-input>
+            <el-input class="inp" v-model="keyword.sName" placeholder="学校名称"></el-input>
+            <el-input class="inp" v-model="keyword.fName" placeholder="负责人姓名"></el-input>
             <el-button class="inp" style="width:80px" type="primary">搜索</el-button>
+          </div>
+          <div class="list">
+            <div class="tit">排序：</div>
+            <ul>
+              <li
+                @click="selectIndex(item,index)"
+                v-for="(item,index) in sortList"
+                :key="index"
+                :class="sortIndex==index?'isSelect':''"
+                style="margin-right:10px"
+              >
+                {{item.name}}
+                <div class="sort">
+                  <div :style="item.tb ? 'color:#333':''" class="el-icon-caret-top ileft"></div>
+                  <div :style="item.tb ? '':'color:#333'" class="el-icon-caret-bottom iright"></div>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
         <div class="showProgram">
@@ -107,7 +117,53 @@
   </div>
 </template>
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      keyword: {
+        pName: "",
+        sName: "",
+        fName: ""
+      },
+      // heatNav: [{name:"人气排行",icon:"iconfont icon-hot"}, {name:"下载排行",icon:"el-icon-download"}, {name:"上新排行",icon:"iconfont icon-shangchuan"}],
+      sortList: [
+        { name: "最新", tb: false },
+        { name: "评分", tb: false },
+        { name: "收藏", tb: false },
+        { name: "点赞", tb: false }
+      ],
+      sortIndex: 0,
+      organIndex: 0,
+      wheelIndex: 0,
+      organ: [],
+      wheel: []
+    };
+  },
+  created() {
+    this.getOrgan();
+  },
+  methods: {
+    selectIndex(item, index) {
+      this.sortIndex = index;
+      item.tb = !item.tb;
+    },
+    selectOrgan(item, index) {
+      this.organIndex = index;
+    },
+    selectWheel(item, index) {
+      this.wheelIndex = index;
+    },
+    // 获取所属专业
+    getOrgan() {
+      this.$axios.post("/api/user/organ").then(res => {
+        this.organ = res.data;
+      });
+      this.$axios.post("/api/user/wheel").then(res => {
+        this.wheel = res.data;
+      });
+    }
+  }
+};
 </script>
 
 <style lang="stylus" scoped>
@@ -137,7 +193,26 @@ export default {};
           display: flex;
 
           li {
+            display: flex;
             margin-left: 30px;
+
+            .sort {
+              margin-left: 2px;
+              font-size: 12px;
+              position: absolute;
+
+              .ileft {
+                position: relative;
+                top: -3px;
+                left: 31px;
+              }
+
+              .iright {
+                position: relative;
+                top: 4px;
+                left: 19px;
+              }
+            }
           }
         }
 
@@ -151,6 +226,7 @@ export default {};
         background-color: #4ccaff;
         color: #ffffff;
         border-radius: 5px;
+        margin-top: 1px;
         padding: 0 20px;
       }
     }
@@ -159,7 +235,6 @@ export default {};
       width: 1190px;
       margin: 0 auto;
       margin-top: 40px;
-      background-color: pink;
 
       ul {
         display: flex;
@@ -184,8 +259,8 @@ export default {};
               width: 100%;
               border-radius: 5px;
               height: 50px;
-              background-color: #000000;
-              opacity: 0.5;
+              background-color: #333;
+              opacity: 0.2;
               bottom: 0;
               color: #ffffff;
               display: flex;

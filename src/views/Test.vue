@@ -1,8 +1,12 @@
 <template>
   <div>
-    <div  v-for="i in numPages" :key="i">
+    <!-- <div  v-for="i in numPages" :key="i">
       <pdf class="wrapper" :src="src" :page="i"></pdf>
-    </div>
+    </div> -->
+    <!-- <div class="test">
+      4.9
+    </div> -->
+    
   </div>
   <!-- <div id="app">
     5544545
@@ -153,5 +157,15 @@ export default {
   width: 60%;
   margin: 0px auto;
   margin-top -350px
+}
+.test{
+  width:70px
+  height 93px
+  background url("../assets/rate.png")
+  background-repeat: no-repeat
+  font-size 20px
+  color #ffffff
+  padding-top 24px
+  text-align center
 }
 </style>
