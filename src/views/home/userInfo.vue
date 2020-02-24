@@ -3,8 +3,8 @@
     <div class="wrapper">
       <div class="left">
         <ul class="nav">
-          <li v-for="(item,index) in nav" :key="index" @click="navIndex = index">
-            <router-link :active-class="index==navIndex?'selected':''" :to="item.url">
+          <li v-for="(item,index) in nav"  :key="index" >
+            <router-link active-class="selected" :to="item.url">
               <i :class="item.icon" style="margin-right:5px;font-size:20px;"></i>
               {{item.title}}
             </router-link>
@@ -21,9 +21,6 @@
 export default {
   data() {
     return {
-      userData: { sex: "男" },
-      isShow: false,
-      editData: {},
       nav: [
         { title: "我的信息", url: "/personInfo", icon: "iconfont icon-yonghu" },
         { title: "我的收藏", url: "/mylove", icon: "iconfont icon-shoucang" },
@@ -44,41 +41,11 @@ export default {
           icon: "iconfont icon-shangchuan"
         }
       ],
-      navIndex: 0
     };
   },
   created() {
-    this.editData = this.$store.state.userInfo;
   },
   methods: {
-    editInfo() {
-      this.isShow = true;
-    },
-    edit() {
-      let userInfo = new FormData();
-      userInfo.append("name", this.editData.name);
-      userInfo.append("sex", this.editData.sex);
-      userInfo.append("account", this.editData.account);
-      userInfo.append("phone", this.editData.phone);
-      userInfo.append("dentity", this.editData.dentity);
-      userInfo.append("contact", this.editData.contact);
-      userInfo.append("clazz", this.editData.clazz);
-      userInfo.append("faculty", this.editData.faculty);
-      userInfo.append("pfession", this.editData.pfession);
-      userInfo.append("school", this.editData.school);
-      userInfo.append("id", this.editData.id);
-      this.$axios.post("/api/note/upnotewluser", userInfo).then(res => {
-        if (res.data.code == "OK") {
-          this.$store.commit("getUser", this.editData);
-          this.isShow = false;
-        } else {
-          this.$message({
-            type: "error",
-            message: "编辑失败"
-          });
-        }
-      });
-    }
   }
 };
 </script>

@@ -15,8 +15,8 @@
               <div class="date">
                 <p>上次学习:{{item.dates}}</p>
                 <p @click.stop="del(item)">删除</p>
-              </div>
             </div>
+              </div>
           </div>
         </li>
       </ul>
@@ -68,7 +68,7 @@ export default {
         programDetail.append("keyword", this.keyword);
       }
       this.$axios.post("/api/note/browseList",programDetail).then(res => {
-        console.log(res)
+        // console.log(res)
         this.programData = res.data.rows
         this.programData.map(item => {
           item.uploadtime = moment(item.uploadtime).format(

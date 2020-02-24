@@ -1,57 +1,35 @@
 <template>
   <div>
-    <!-- <div  v-for="i in numPages" :key="i">
-      <pdf class="wrapper" :src="src" :page="i"></pdf>
-    </div> -->
-    <!-- <div class="test">
-      4.9
-    </div> -->
-    
+    <video controls width="700" height="300" id="video"></video>
+    <img ref="myVideo" id="output" alt />
   </div>
-  <!-- <div id="app">
-    5544545
-    <div class="pdf" style="width: 600px;height:1400px;">
-      <pdf v-for="i in numPages" :key="i" :src="src" :page="i"></pdf>
-    </div>
-    <div id="pie" style="width: 600px;height:400px;"></div>
-    <div id="line1" style="width: 600px;height:400px;"></div>
-    <el-upload
-      action="/api/upload"
-      list-type="picture-card"
-    >
-      <i class="el-icon-plus"></i>
-    </el-upload>
-    <iframe
-      src="http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf"
-      width="100%"
-      height="100%"
-    >
-      This browser does not support PDFs. Please download the PDF to view it:
-      <a
-        href="/test.pdf"
-        rel="external nofollow"
-      >Download PDF</a>
-    </iframe>
-  </div>-->
 </template>
 <script>
-import pdf from "vue-pdf";
-var loadingTask = pdf.createLoadingTask(
-  "/api/static/picture/9d62ac8b-8af7-4245-aada-3bc8539d00c1qwer.pdf"
-);
 export default {
-  components: {
-    pdf
-  },
+  components: {},
   data() {
-    return {
-      src: loadingTask,
-      numPages: undefined
-    };
+    return {};
   },
   mounted() {
-    this.src.then(pdf => {
-      this.numPages = pdf.numPages;
+    let _this = this;
+    this.$nextTick(() => {
+      let video = document.getElementById("video");
+      let source = document.createElement("source");
+      source.src ="https://vdept.bdstatic.com/6b72704b524574736a634756505a3177/764758584c6c7a52/171a52b66dc3eb45a8db0dc4dc1ff934fd1b568025d5f90189ef8db17da5c902382a4f78f1379897b49d56261cdfa4f2.mp4?auth_key=1579521973-0-0-6eccabf4123af557d33a3489947ac9d4"
+      source.type = "video/mp4";
+      video.appendChild(source);
+      video.addEventListener("loadeddata", function() {
+        var canvas = document.createElement("canvas");
+        canvas.width = "320";
+        canvas.height = "320";
+        canvas
+          .getContext("2d")
+          .drawImage(video, 0, 0, canvas.width, canvas.width);
+        var img = document.createElement("output");
+        let imgsrc = canvas.toDataURL("image/png");
+        console.log(imgsrc)
+        _this.$refs.myVideo.src = imgsrc
+      });
     });
   }
 };
@@ -156,16 +134,17 @@ export default {
   height: 1400px;
   width: 60%;
   margin: 0px auto;
-  margin-top -350px
+  margin-top: -350px;
 }
-.test{
-  width:70px
-  height 93px
-  background url("../assets/rate.png")
-  background-repeat: no-repeat
-  font-size 20px
-  color #ffffff
-  padding-top 24px
-  text-align center
+
+.test {
+  width: 70px;
+  height: 93px;
+  background: url('../assets/rate.png');
+  background-repeat: no-repeat;
+  font-size: 20px;
+  color: #ffffff;
+  padding-top: 24px;
+  text-align: center;
 }
 </style>

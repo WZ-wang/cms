@@ -100,7 +100,7 @@
           prop="name"
           :rules="{
       required: true, message: '姓名不能为空', trigger: 'blur'
-    }"
+     }"
         >
           <el-input v-model="editData.name" autocomplete="off"></el-input>
         </el-form-item>
@@ -109,7 +109,7 @@
           prop="sex"
           :rules="{
       required: true, message: '性别不能为空', trigger: 'blur'
-    }"
+     }"
         >
           <el-radio v-model="editData.sex" label="男">男</el-radio>
           <el-radio v-model="editData.sex" label="女">女</el-radio>
@@ -119,7 +119,7 @@
           prop="datefb"
           :rules="{
       required: true, message: '出生年月不能为空', trigger: 'blur'
-    }"
+     }"
         >
           <el-date-picker v-model="editData.datefb" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
@@ -128,7 +128,7 @@
           prop="caddress"
           :rules="{
       required: true, message: '联系地址不能为空', trigger: 'blur'
-    }"
+     }"
         >
           <el-input v-model="editData.caddress"></el-input>
         </el-form-item>
@@ -137,7 +137,7 @@
           prop="contact"
           :rules="{
       required: true, message: '邮箱不能为空', trigger: 'blur'
-    }"
+     }"
         >
           <el-input v-model="editData.contact"></el-input>
         </el-form-item>
@@ -146,7 +146,7 @@
           prop="school"
           :rules="{
       required: true, message: '毕业院校不能为空', trigger: 'blur'
-    }"
+     }"
         >
           <el-input v-model="editData.school"></el-input>
         </el-form-item>
@@ -155,7 +155,7 @@
           prop="ebackground"
           :rules="{
       required: true, message: '学历不能为空', trigger: 'blur'
-    }"
+     }"
         >
           <el-input v-model="editData.ebackground"></el-input>
         </el-form-item>
@@ -164,7 +164,7 @@
           prop="faculty"
           :rules="{
       required: true, message: '专业不能为空', trigger: 'blur'
-    }"
+     }"
         >
           <el-input v-model="editData.faculty"></el-input>
         </el-form-item>
@@ -173,7 +173,7 @@
           prop="iresume"
           :rules="{
       required: true, message: '个人简历不能为空', trigger: 'blur'
-    }"
+     }"
         >
           <el-input v-model="editData.iresume"></el-input>
         </el-form-item>
@@ -182,7 +182,7 @@
           prop="organization"
           :rules="{
       required: true, message: '工作机构不能为空', trigger: 'blur'
-    }"
+     }"
         >
           <el-input v-model="editData.organization"></el-input>
         </el-form-item>
@@ -191,7 +191,7 @@
           prop="pfession"
           :rules="{
       required: true, message: '院系/部门不能为空', trigger: 'blur'
-    }"
+     }"
         >
           <el-input v-model="editData.pfession"></el-input>
         </el-form-item>
@@ -200,7 +200,7 @@
           prop="career"
           :rules="{
       required: true, message: '职业不能为空', trigger: 'blur'
-    }"
+     }"
         >
           <el-input v-model="editData.career"></el-input>
         </el-form-item>
@@ -224,7 +224,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="isShow = false">取 消</el-button>
+        <el-button @click="cancel()">取 消</el-button>
         <el-button type="primary" @click="edit()">确 定</el-button>
       </div>
     </el-dialog>
@@ -240,9 +240,8 @@ export default {
     };
   },
   created() {
-    // console.log( this.$store.state.userInfo)
     this.editData = this.$store.state.userInfo;
-    // this.editData.datefb = moment(this.editData.datefb).format('YYYY-MM-DD')
+    this.editData.datefb = moment(this.editData.datefb).format('YYYY-MM-DD')
   },
   methods: {
     editInfo() {
@@ -256,7 +255,7 @@ export default {
         this.editData.caddress &&
         this.editData.contact &&
         this.editData.school &&
-        this.editData.faculty &&
+        this.editData.faculty && 
         this.editData.pfession &&
         this.editData.ebackground &&
         this.editData.organization &&
@@ -265,6 +264,7 @@ export default {
       ) {
         let userInfo = new FormData();
         userInfo.append("name", this.editData.name);
+        userInfo.append("phone", this.editData.phone);
         userInfo.append("sex", this.editData.sex);
         userInfo.append("datefb", this.editData.datefb);
         userInfo.append("caddress", this.editData.caddress);
@@ -282,8 +282,9 @@ export default {
         userInfo.append("academic", this.editData.academic);
         userInfo.append("publish", this.editData.publish);
         userInfo.append("achievement", this.editData.achievement);
-        userInfo.append("id", this.editData.id);
+        // userInfo.append("id", this.editData.id);
         this.$axios.post("/api/note/upnotewluser", userInfo).then(res => {
+          console.log(res)
           if (res.data.code == "OK") {
             this.editData.datefb = moment(this.editData.datefb).format(
               "YYYY-MM-DD"
@@ -301,6 +302,10 @@ export default {
       } else {
         this.$message.warning("有必填项未填");
       }
+    },
+    cancel(){
+      this.editData = this.$store.state.userInfo;
+      this.isShow = false
     }
   }
 };

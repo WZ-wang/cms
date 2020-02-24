@@ -36,7 +36,9 @@
       </div>
     </header>
 
-    <router-view></router-view>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
 
     <footer>
       <p class="cell">
@@ -279,7 +281,7 @@ export default {
         { title: "实训项目", url: "/program" },
         { title: "热度排行", url: "/heat" }
       ],
-      phone:""
+      phone: ""
       // rules: {
       //   phone: [{ required: true, validator: checkphone, trigger: "blur" }],
       //   password: [
@@ -327,7 +329,10 @@ export default {
       this.$store.commit("checkToken");
       this.isLogin = this.$store.state.isLogin;
       this.userInfo = this.$store.state.userInfo;
-      this.phone = this.userInfo.phone.replace(this.userInfo.phone.substring(3,7),"****")
+      this.phone = this.userInfo.phone.replace(
+        this.userInfo.phone.substring(3, 7),
+        "****"
+      );
     },
     //登录
     submitForm(loginForm, index) {
@@ -345,7 +350,7 @@ export default {
               } else {
                 this.clearCookie();
               }
-              console.log(res)
+              console.log(res);
               localStorage.setItem("Token", res.data.wuser.token);
               this.$store.commit("getUser", res.data.wuser);
               this.getInfo();

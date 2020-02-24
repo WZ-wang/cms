@@ -141,19 +141,37 @@ export default {
   },
   created() {
     this.getOrgan();
+    this.getData()
   },
   methods: {
+    // 获取数据
+    getData(){
+      let programData = new FormData()
+      programData.append()
+    },
+    // 排序
     selectIndex(item, index) {
       this.sortIndex = index;
       item.tb = !item.tb;
+      if(index == 0){
+        console.log("最新")
+      }else if(index==1){
+        console.log("评分")
+      }else if(index == 2){
+        console.log("收藏")
+      }else if(index==3){
+        console.log("点赞")
+      }
     },
+    // 选择专业类
     selectOrgan(item, index) {
       this.organIndex = index;
     },
+    // 选择对应专业
     selectWheel(item, index) {
       this.wheelIndex = index;
     },
-    // 获取所属专业
+    // 获取所属专业和专业类
     getOrgan() {
       this.$axios.post("/api/user/organ").then(res => {
         this.organ = res.data;

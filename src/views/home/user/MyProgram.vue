@@ -12,7 +12,7 @@
       </div>
       <div class="content">
         <div class="wrapper" v-for="(item,index) in myProgramData" :key="index">
-          <div class="left" >
+          <div class="left">
             <img @click="toProgramDetail(item)" src="../../../assets/program.jpg" alt />
             <div class="center">
               <h3 class="name">{{item.name}}</h3>
@@ -330,7 +330,7 @@ export default {
       needProgram.append("page", this.paginations.page_index);
       needProgram.append("rows", this.paginations.page_size);
       needProgram.append("sids", this.userInfo.phone);
-      if(this.keyword){
+      if (this.keyword) {
         needProgram.append("keyword", this.keyword);
       }
       this.$axios.post("/api/note/courselist", needProgram).then(res => {
@@ -344,13 +344,22 @@ export default {
     },
     // 删除
     del(item) {
-      console.log(item)
-      let pData = new FormData();
-      pData.append("id", item.id);
-      this.$axios.post("/api/note/delcourse", pData).then(res => {
-        console.log(res);
-        this.getData();
-      });
+      console.log(item);
+      this.$confirm("此操作将永久删除该项目, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          let pData = new FormData();
+          pData.append("id", item.id);
+          this.$axios.post("/api/note/delcourse", pData).then(res => {
+            // console.log(res);
+            this.getData();
+          });
+        })
+        .catch(() => {
+        });
     },
     //编辑
     handleEdit(item) {
@@ -431,7 +440,7 @@ export default {
     },
     //搜索
     search() {
-      this.getData()
+      this.getData();
     },
     // 跳转到项目详情
     toProgramDetail(item) {
@@ -588,6 +597,7 @@ export default {
 .myProgram {
   position: relative;
   width: 900px;
+
   .search {
     width: 200px;
     position: absolute;

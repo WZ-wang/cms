@@ -2,40 +2,60 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>capture screen</title>
+<meta charset="UTF-8">
+<title></title>
+<link rel="stylesheet" type="text/css" href="css/animate.css" />
+
+<style type="text/css">
+.dv {
+width: 200px;
+height: 400px;
+
+transform: translateY(100%);
+position: fixed;
+right: 0;
+bottom: 0;
+z-index: 5;
+}
+.btn {
+position: fixed;
+right: 0;
+bottom: 0;
+z-index: 10;
+}
+.dis {
+
+}
+</style>
 </head>
 
 <body>
-    <video id="video" controls="controls">
-        <source src="http://192.168.1.48:9000/static/video/7edbe29f-a4e1-4f5d-adff-05f70d65a602demo.mp4">
-    </video>
-    <div id="output"></div>
-    <script type="text/javascript">
-        (function () {
-            var video, output;
-            var scale = 0.8;
-            var initialize = function () {
-                output = document.getElementById("output");
-                video = document.getElementById("video");
-                video.addEventListener('loadeddata', captureImage);
-            };
+<div id="app">
+<div class="dv" v-bind:class="{animated:da,slideOutDown:isactive,slideInUp:!isactive}">
 
-            var captureImage = function () {
-                var canvas = document.createElement("canvas");
-                canvas.width = video.videoWidth * scale;
-                canvas.height = video.videoHeight * scale;
-                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                var img = document.createElement("img");
-                img.src = canvas.toDataURL("image/png");
-                console.log(img.src)
-                output.appendChild(img);
-            };
-
-            initialize();
-        })();
-    </script>
+</div>
+<button type="button" v-on:click="open">点击</button>
+<button type="button" v-on:click="close">点击2</button>
+</div>
 </body>
+<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+var app = new Vue({
+el: '#app',
+data: {
+isactive: true,
+da:false
+},
+methods: {
+open: function() {
+this.isactive = false;
+this.da=true;
+},
+close:function () {
+this.isactive=true;
+}
+}
+})
+</script>
 
 </html>
